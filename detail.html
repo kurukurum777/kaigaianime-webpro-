@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>詳細</title>
+</head>
+<body>
+
+  <h1 id="title"></h1>
+
+  <h2>編集</h2>
+  <input id="editTitle">
+  <textarea id="editDesc"></textarea>
+  <br>
+  <button id="save">保存</button>
+
+  <script>
+    "use strict";
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    // 表示
+    fetch(`/api/anime/${id}`)
+      .then(res => res.json())
+      .then(anime => {
+        document.getElementById("title").innerText = anime.title;
+        document.getElementById("editTitle").value = anime.title;
+        document.getElementById("editDesc").value = anime.description;
+      });
+
+    // 保存（PUT）
+    document.getElementById("save").onclick = () => {
+      fetch(`/api/anime/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: document.getElementById("editTitle").value,
+          description: document.getElementById("editDesc").value
+        })
+      }).then(() => alert("更新しました"));
+    };
+  </script>
+
+</body>
+</html>
